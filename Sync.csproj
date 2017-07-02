@@ -54,6 +54,7 @@
     <Compile Include="CollectionToTest.cs" />
     <Compile Include="EType.cs" />
     <Compile Include="ECompare.cs" />
+    <Compile Include="Extension.cs" />
     <Compile Include="FileToWrite.cs" />
     <Compile Include="Fixer.cs" />
     <Compile Include="Folder.cs">

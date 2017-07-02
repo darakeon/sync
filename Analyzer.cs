@@ -36,12 +36,9 @@ namespace Sync
             switch (sourceControl.CurrentStatus)
             {
                 case Versioning.Status.None:
-                    
-                    if (currentMainPath.EndsWith(":"))
-                        currentMainPath += @"\";
-                    
-                    if (currentComparePath.EndsWith(":"))
-                        currentComparePath += @"\";
+
+                    currentMainPath = currentMainPath.CorrectIfDisk();
+                    currentComparePath = currentComparePath.CorrectIfDisk();
                     
                     analyzeFiles(currentMainPath, currentComparePath);
                     analyzeDirectories(currentMainPath, currentComparePath);

@@ -104,6 +104,8 @@ namespace Sync
                 counter++;
 
                 Thread.Sleep(123);
+
+                Application.DoEvents();
             }
 
             Hide();

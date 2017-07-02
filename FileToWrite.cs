@@ -11,6 +11,8 @@ namespace Sync
         {
             Name = name;
 
+            majorPath = majorPath.CorrectIfDisk();
+
             Folder = relativePath == Resources.Interface_Row_Root
                 ? majorPath
                 : P.Combine(majorPath, relativePath);

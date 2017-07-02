@@ -39,6 +39,8 @@ namespace Sync
         private readonly Interface @interface;
         #endregion
 
+
+
         private String charge()
         {
             @interface.Clear();
@@ -136,36 +138,9 @@ namespace Sync
             grdDados.Columns.Add(button);
         }
 
+        
 
-
-        private void btnAgainClick(object sender, EventArgs e)
-        {
-            Hide();
-
-            var cancelToken = new CancellationTokenSource();
-
-            var task = new Task(() => new Wait().Progress(cancelToken.Token), cancelToken.Token);
-            task.Start();
-
-            String message;
-
-            try
-            {
-                message = charge();
-            }
-            finally
-            {
-                cancelToken.Cancel();
-            }
-
-            MessageBox.Show(message);
-
-            Show();
-        }
-
-
-
-        private void grdDadosCellClick(object sender, DataGridViewCellEventArgs e)
+        private void executeButtonAction(DataGridViewCellEventArgs e)
         {
             var isHeaderLine = e.RowIndex < 0;
 
@@ -227,6 +202,60 @@ namespace Sync
                 throw new ApplicationException(Resources.Folder_MissingButton);
 
             return button;
+        }
+
+
+
+        private void btnAgainClick(object sender, EventArgs e)
+        {
+            var cancelToken = callWait();
+
+            var message = String.Empty;
+
+            try
+            {
+                message = charge();
+            }
+            finally
+            {
+                cancelToken.Cancel();
+
+                if (!String.IsNullOrWhiteSpace(message))
+                    MessageBox.Show(message);
+
+                Show();
+            }
+        }
+
+
+
+        private void grdDadosCellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var cancelToken = callWait();
+
+            try
+            {
+                executeButtonAction(e);
+            }
+            finally
+            {
+                cancelToken.Cancel();
+                Show();
+            }
+        }
+
+
+        
+        private CancellationTokenSource callWait()
+        {
+            Hide();
+
+            var cancelToken = new CancellationTokenSource();
+
+            var task = new Task(() => new Wait().Progress(cancelToken.Token), cancelToken.Token);
+            task.Start();
+
+            return cancelToken;
         }
 
 
