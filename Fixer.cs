@@ -128,13 +128,13 @@ namespace Sync
 
         private static Boolean delete(FileToWrite wrong)
         {
-            if (File.Exists(wrong.Folder))
+            if (File.Exists(wrong.Path))
             {
                 File.Delete(wrong.Path);
                 return true;
             }
 
-            if (Directory.Exists(wrong.Folder))
+            if (Directory.Exists(wrong.Path))
             {
                 Directory.Delete(wrong.Path, true);
                 return true;
