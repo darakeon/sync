@@ -13,8 +13,8 @@ namespace Sync
             var mainSourceControl = getParent(path1);
             var compareSourceControl = getParent(path2);
 
-            var sourceControlFail = mainSourceControl != path2
-                                 && compareSourceControl != path1
+            var sourceControlFail = !areEqual(mainSourceControl, path2)
+                                 && !areEqual(compareSourceControl, path1)
                                  && mainSourceControl != compareSourceControl;
 
             if (sourceControlFail)
@@ -22,6 +22,12 @@ namespace Sync
             else if (mainSourceControl == null && compareSourceControl == null)
                 CurrentStatus = Status.None;
         }
+
+        private Boolean areEqual(String str1, String str2)
+        {
+            return String.Compare(str1, str2, StringComparison.InvariantCultureIgnoreCase) == 0;
+        }
+
 
         internal enum Status
         {
