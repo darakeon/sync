@@ -97,7 +97,7 @@
             this.btnAgain.TabIndex = 17;
             this.btnAgain.Text = "RUN";
             this.btnAgain.UseVisualStyleBackColor = true;
-            this.btnAgain.Click += new System.EventHandler(this.BtnAgainClick);
+            this.btnAgain.Click += new System.EventHandler(this.btnAgainClick);
             // 
             // grdDados
             // 
@@ -113,7 +113,7 @@
             this.grdDados.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.grdDados.Size = new System.Drawing.Size(180, 45);
             this.grdDados.TabIndex = 16;
-            this.grdDados.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GrdDadosCellClick);
+            this.grdDados.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grdDadosCellClick);
             // 
             // Folder
             // 

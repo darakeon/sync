@@ -25,12 +25,12 @@ namespace Sync
         private readonly Interface @interface;
         #endregion
 
-        private void Charge()
+        private void charge()
         {
             @interface.Clear();
 
-            mainPath = GetPath(txtMainPath);
-            comparePath = GetPath(txtComparePath);
+            mainPath = getPath(txtMainPath);
+            comparePath = getPath(txtComparePath);
 
             if (mainPath == null || comparePath == null)
                 return;
@@ -54,41 +54,73 @@ namespace Sync
             if (@interface.RowsCount == 0)
             {
                 Interface.Realign(this);
-                MessageBox.Show(Resources.Folder_Charge);
+                MessageBox.Show(Resources.Folder_NotFilesFound);
             }
             else
             {
                 grdDados.DataSource = @interface.Table;
 
+                setSolveButton();
+
                 Interface.Realign(this);
                 MessageBox.Show(
-                    string.Format("{0} arquivo(s) a sincronizar.", grdDados.RowCount)
+                    string.Format(Resources.Folder_SyncFilesCount, grdDados.RowCount)
                 );
             }
 
         }
 
-        private string GetPath(Control textBox)
+        private void setSolveButton()
         {
-            var path = string.Format("{0}{1}", textBox.Text, txtSubfolder.Text);
+            var solveButton = new DataGridViewButtonColumn
+                                  {
+                                      Name = Interface.ColSolve,
+                                      Text = Interface.ColSolve
+                                  };
+
+            grdDados.Columns.Add(solveButton);
+
+            foreach (DataGridViewRow row in grdDados.Rows)
+            {
+                var action = row.Cells[Interface.ColTrouble].Value.ToString();
+                var button = row.Cells[Interface.ColSolve];
+
+                switch (action)
+                {
+                    case Interface.NotExistsProblem:
+                        button.Value = Interface.SolveNotExists;
+                        break;
+                    case Interface.ObseleteProblem:
+                        button.Value = Interface.SolveObselete;
+                        break;
+                }
+                
+            }
+        }
+
+        private String getPath(Control textBox)
+        {
+            var path = Path.Combine(textBox.Text, txtSubfolder.Text);
 
             if (Directory.Exists(path))
             {
+                if (path.EndsWith("/") || path.EndsWith(@"\"))
+                    path = path.Substring(0, path.Length - 1);
+
                 return path;
             }
 
-
-            MessageBox.Show( string.Format(@"""{0}"" não existe!", path));
+            MessageBox.Show( String.Format(@"""{0}"" não existe!", path));
             textBox.Focus();
             return null;
         }
 
-        private void BtnAgainClick(object sender, EventArgs e)
+        private void btnAgainClick(object sender, EventArgs e)
         {
             btnAgain.Enabled = false;
             Cursor = Cursors.WaitCursor;
 
-            Charge();
+            charge();
 
             btnAgain.Enabled = true;
             Cursor = Cursors.Default;
@@ -96,19 +128,75 @@ namespace Sync
             //this.Folder_Resize(sender, e);
         }
 
-        private void GrdDadosCellClick(object sender, DataGridViewCellEventArgs e)
+        private void grdDadosCellClick(object sender, DataGridViewCellEventArgs e)
         {
-            var isLastColumn = e.ColumnIndex == grdDados.ColumnCount - 1;
+            var buttonColumn = grdDados.Columns[Interface.ColSolve];
+
+            var isLastColumn = e.ColumnIndex == buttonColumn.Index;
             var isHeaderLine = e.RowIndex < 0;
 
             if (!isLastColumn || isHeaderLine)
                 return;
 
+            var cell = grdDados.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            var done = false;
 
-            analyzer.VerifyToDelete(grdDados.Rows[e.RowIndex], @interface.Table);
+            switch (cell.Value.ToString())
+            {
+                case Interface.SolveNotExists:
+                    done = copy(e.RowIndex);
+                    break;
+                case Interface.SolveObselete:
+                    done = overwrite(e.RowIndex);
+                    break;
+            }
 
-            Interface.Realign(this);
+            if (done)
+                Interface.Realign(this);
         }
+
+
+        private Boolean copy(Int32 rowNumber)
+        {
+            var row = grdDados.Rows[rowNumber];
+
+            var updated = row.Cells[Interface.ColUpdated].Value.ToString();
+            var obsolete = row.Cells[Interface.ColObsolete].Value.ToString();
+
+            var relativePath = row.Cells[Interface.ColPath].Value.ToString();
+            var file = row.Cells[Interface.ColFileName].Value.ToString();
+
+            var origin = new FileToWrite(updated, relativePath, file);
+            var destiny = new FileToWrite(obsolete, relativePath, file);
+
+            var confirm = confirmBox(Resources.Folder_SureCopy, origin.Path, file, destiny.Date, origin.Date);
+
+            if (!confirm)
+                return false;
+            
+            throw new NotImplementedException();
+        }
+
+        
+        private Boolean overwrite(Int32 rowNumber)
+        {
+            var confirm = confirmBox(Resources.Folder_SureOverwrite);
+
+            if (!confirm)
+                return false;
+            throw new NotImplementedException();
+        }
+        
+
+        private Boolean confirmBox(String format, params object[] args)
+        {
+            var message = String.Format(format, args);
+
+            var response = MessageBox.Show(message, Resources.Sync, MessageBoxButtons.YesNo);
+
+            return response == DialogResult.Yes;
+        }
+
 
     }
 

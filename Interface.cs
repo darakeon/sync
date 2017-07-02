@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 
@@ -13,34 +12,36 @@ namespace Sync
         {
             Table = new DataTable();
 
-            Table.Columns.Add(ColAction);
-            Table.Columns.Add(ColDisk);
+            Table.Columns.Add(ColTrouble);
+            Table.Columns.Add(ColObsolete);
+            Table.Columns.Add(ColUpdated);
             Table.Columns.Add(ColPath);
             Table.Columns.Add(ColFileName);
             
-            Table.Columns.Add(ColVerify).DefaultValue = ColVerify;
-
-            var primaryKeys = new List<DataColumn>
-                                  {
-                                      Table.Columns[0],
-                                      Table.Columns[1],
-                                      Table.Columns[2],
-                                      Table.Columns[3]
-                                  };
-
-            Table.PrimaryKey = primaryKeys.ToArray();
+            Table.PrimaryKey = new []
+            {
+                Table.Columns[0],
+                Table.Columns[1],
+                Table.Columns[2],
+                Table.Columns[3],
+                Table.Columns[4]
+            };
         }
 
 
         public const String NotExistsProblem = "Não existe";
-        public const String CSobrescrever = "Sobrescrever";
-        private const Int32 cMaxLinhas = 20;
+        public const String ObseleteProblem = "Desatualizado";
+        public const String SolveNotExists = "Copiar";
+        public const String SolveObselete = "Sobrescrever";
 
-        public const String ColAction = "Ação";
-        public const String ColDisk = "Em";
+        private const Int32 maxLines = 20;
+
+        public const String ColTrouble = "Problema";
+        public const String ColObsolete = "Em";
+        public const String ColUpdated = "Atualizado";
         public const String ColPath = "Caminho";
         public const String ColFileName = "Arquivo";
-        public const String ColVerify = "Verifica";
+        public const String ColSolve = "Resolver";
 
 
         private const int defaultWidth = 180;
@@ -58,7 +59,7 @@ namespace Sync
         private const int frmMarginBottom = 4;
         
 
-        private static readonly String[] No = new[] { "Não", "NÃO", "Não..." };
+        private static readonly String[] denies = new[] { "Não", "NÃO", "Não..." };
         private static Int32 witchNo;
 
 
@@ -87,14 +88,14 @@ namespace Sync
                 
                 int heightIncrease;
 
-                if (rowCount <= cMaxLinhas)
+                if (rowCount <= maxLines)
                 {
                     heightIncrease = rowCount;
                     form.grdDados.ScrollBars = ScrollBars.None;
                 }
                 else
                 {
-                    heightIncrease = cMaxLinhas;
+                    heightIncrease = maxLines;
                     form.grdDados.Width += scrollWidth;
                     formWidth += scrollWidth;
                 }
@@ -122,19 +123,14 @@ namespace Sync
             form.lblSubfolder.Left = 2 * buttonWidth + lblMargin;
         }
 
-        public static void IssueNotSolved(DataRow row)
-        {
-            row[ColVerify] = No[witchNo];
-            witchNo++;
-            witchNo = witchNo % No.Length;
-        }
-
-        public void AddRow(String trouble, String disk, String path, String fileName)
+        public void AddRow(String trouble, String obsolete, String updated, String path, String fileName)
         {
             var row = Table.NewRow();
 
-            row[ColAction] = trouble;
-            row[ColDisk] = disk;
+            row[ColTrouble] = trouble;
+            
+            row[ColObsolete] = obsolete;
+            row[ColUpdated] = updated;
 
             row[ColPath] = path;
             row[ColFileName] = fileName;

@@ -117,7 +117,19 @@
 	<data name="Analyzer_VerifyToDelete">
 		<value xml:space="preserve">Erro, programa fora dos parâmetros</value>
 	</data>
-	<data name="Folder_Charge">
-		<value xml:space="preserve">Sem arquivos a sincronizar!</value>
+  <data name="Folder_NotFilesFound">
+    <value xml:space="preserve">Sem arquivos a sincronizar!</value>
+  </data>
+  <data name="Folder_SyncFilesCount">
+    <value xml:space="preserve">{0} arquivo(s) a sincronizar!</value>
+  </data>
+  <data name="Folder_SureCopy">
+    <value xml:space="preserve">Deseja copiar {0} para {1}?</value>
+  </data>
+  <data name="Folder_SureOverwrite">
+    <value xml:space="preserve">Deseja substituir o arquivo {0} em {1}?\nData antiga: {2}\nData nova: {3}</value>
+  </data>
+  <data name="Sync">
+		<value xml:space="preserve">Sync</value>
 	</data>
 </root>
