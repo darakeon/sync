@@ -14,12 +14,12 @@ namespace Sync
             InitializeComponent();
             @interface = new Interface();
 
-            txtHandhara.Text = ConfigurationManager.AppSettings["Handhara"];
-            txtLucy.Text = ConfigurationManager.AppSettings["Lucy"];
+            txtMainPath.Text = ConfigurationManager.AppSettings["MainPath"];
+            txtComparePath.Text = ConfigurationManager.AppSettings["ComparePath"];
         }
 
-        private String handhara;
-        private String lucy;
+        private String mainPath;
+        private String comparePath;
 
         private Analyzer analyzer;
         private readonly Interface @interface;
@@ -29,13 +29,13 @@ namespace Sync
         {
             @interface.Clear();
 
-            handhara = GetPath(txtHandhara);
-            lucy = GetPath(txtLucy);
+            mainPath = GetPath(txtMainPath);
+            comparePath = GetPath(txtComparePath);
 
-            if (handhara == null || lucy == null)
+            if (mainPath == null || comparePath == null)
                 return;
 
-            analyzer = new Analyzer(handhara, lucy, @interface.AddRow);
+            analyzer = new Analyzer(mainPath, comparePath, @interface.AddRow);
 
 
 
@@ -70,7 +70,7 @@ namespace Sync
 
         private string GetPath(Control textBox)
         {
-            var path = string.Format("{0}{1}", textBox.Text, txtSubPasta.Text);
+            var path = string.Format("{0}{1}", textBox.Text, txtSubfolder.Text);
 
             if (Directory.Exists(path))
             {

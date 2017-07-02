@@ -29,71 +29,71 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Folder));
-            this.lblSubPasta = new System.Windows.Forms.Label();
-            this.lblLucy = new System.Windows.Forms.Label();
-            this.lblHandhara = new System.Windows.Forms.Label();
-            this.txtSubPasta = new System.Windows.Forms.TextBox();
-            this.txtLucy = new System.Windows.Forms.TextBox();
-            this.txtHandhara = new System.Windows.Forms.TextBox();
+            this.lblSubfolder = new System.Windows.Forms.Label();
+            this.lblComparePath = new System.Windows.Forms.Label();
+            this.lblMainPath = new System.Windows.Forms.Label();
+            this.txtSubfolder = new System.Windows.Forms.TextBox();
+            this.txtComparePath = new System.Windows.Forms.TextBox();
+            this.txtMainPath = new System.Windows.Forms.TextBox();
             this.btnAgain = new System.Windows.Forms.Button();
             this.grdDados = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.grdDados)).BeginInit();
             this.SuspendLayout();
             // 
-            // lblSubPasta
+            // lblSubfolder
             // 
-            this.lblSubPasta.AutoSize = true;
-            this.lblSubPasta.Location = new System.Drawing.Point(123, 28);
-            this.lblSubPasta.Name = "lblSubPasta";
-            this.lblSubPasta.Size = new System.Drawing.Size(52, 13);
-            this.lblSubPasta.TabIndex = 23;
-            this.lblSubPasta.Text = "Subfolder";
+            this.lblSubfolder.AutoSize = true;
+            this.lblSubfolder.Location = new System.Drawing.Point(175, 30);
+            this.lblSubfolder.Name = "lblSubfolder";
+            this.lblSubfolder.Size = new System.Drawing.Size(52, 13);
+            this.lblSubfolder.TabIndex = 23;
+            this.lblSubfolder.Text = "Subfolder";
             // 
-            // lblLucy
+            // lblComparePath
             // 
-            this.lblLucy.AutoSize = true;
-            this.lblLucy.Location = new System.Drawing.Point(63, 28);
-            this.lblLucy.Name = "lblLucy";
-            this.lblLucy.Size = new System.Drawing.Size(30, 13);
-            this.lblLucy.TabIndex = 22;
-            this.lblLucy.Text = "Lucy";
+            this.lblComparePath.AutoSize = true;
+            this.lblComparePath.Location = new System.Drawing.Point(90, 30);
+            this.lblComparePath.Name = "lblComparePath";
+            this.lblComparePath.Size = new System.Drawing.Size(76, 13);
+            this.lblComparePath.TabIndex = 22;
+            this.lblComparePath.Text = "Compare path:";
             // 
-            // lblHandhara
+            // lblMainPath
             // 
-            this.lblHandhara.AutoSize = true;
-            this.lblHandhara.Location = new System.Drawing.Point(3, 28);
-            this.lblHandhara.Name = "lblHandhara";
-            this.lblHandhara.Size = new System.Drawing.Size(54, 13);
-            this.lblHandhara.TabIndex = 21;
-            this.lblHandhara.Text = "Handhara";
+            this.lblMainPath.AutoSize = true;
+            this.lblMainPath.Location = new System.Drawing.Point(5, 30);
+            this.lblMainPath.Name = "lblMainPath";
+            this.lblMainPath.Size = new System.Drawing.Size(57, 13);
+            this.lblMainPath.TabIndex = 21;
+            this.lblMainPath.Text = "Main path:";
             // 
-            // txtSubPasta
+            // txtSubfolder
             // 
-            this.txtSubPasta.Location = new System.Drawing.Point(122, 45);
-            this.txtSubPasta.Name = "txtSubPasta";
-            this.txtSubPasta.Size = new System.Drawing.Size(60, 20);
-            this.txtSubPasta.TabIndex = 20;
+            this.txtSubfolder.Location = new System.Drawing.Point(175, 45);
+            this.txtSubfolder.Name = "txtSubfolder";
+            this.txtSubfolder.Size = new System.Drawing.Size(60, 20);
+            this.txtSubfolder.TabIndex = 20;
             // 
-            // txtLucy
+            // txtComparePath
             // 
-            this.txtLucy.Location = new System.Drawing.Point(62, 45);
-            this.txtLucy.Name = "txtLucy";
-            this.txtLucy.Size = new System.Drawing.Size(60, 20);
-            this.txtLucy.TabIndex = 19;
+            this.txtComparePath.Location = new System.Drawing.Point(90, 45);
+            this.txtComparePath.Name = "txtComparePath";
+            this.txtComparePath.Size = new System.Drawing.Size(80, 20);
+            this.txtComparePath.TabIndex = 19;
             // 
-            // txtHandhara
+            // txtMainPath
             // 
-            this.txtHandhara.Location = new System.Drawing.Point(2, 45);
-            this.txtHandhara.Name = "txtHandhara";
-            this.txtHandhara.Size = new System.Drawing.Size(60, 20);
-            this.txtHandhara.TabIndex = 18;
+            this.txtMainPath.Location = new System.Drawing.Point(5, 45);
+            this.txtMainPath.Name = "txtMainPath";
+            this.txtMainPath.Size = new System.Drawing.Size(80, 20);
+            this.txtMainPath.TabIndex = 18;
             // 
             // btnAgain
             // 
             this.btnAgain.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnAgain.Location = new System.Drawing.Point(0, 0);
             this.btnAgain.Name = "btnAgain";
-            this.btnAgain.Size = new System.Drawing.Size(184, 23);
+            this.btnAgain.Size = new System.Drawing.Size(240, 23);
             this.btnAgain.TabIndex = 17;
             this.btnAgain.Text = "RUN";
             this.btnAgain.UseVisualStyleBackColor = true;
@@ -119,13 +119,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(184, 72);
-            this.Controls.Add(this.lblSubPasta);
-            this.Controls.Add(this.lblLucy);
-            this.Controls.Add(this.lblHandhara);
-            this.Controls.Add(this.txtSubPasta);
-            this.Controls.Add(this.txtLucy);
-            this.Controls.Add(this.txtHandhara);
+            this.ClientSize = new System.Drawing.Size(240, 72);
+            this.Controls.Add(this.lblSubfolder);
+            this.Controls.Add(this.lblComparePath);
+            this.Controls.Add(this.lblMainPath);
+            this.Controls.Add(this.txtSubfolder);
+            this.Controls.Add(this.txtComparePath);
+            this.Controls.Add(this.txtMainPath);
             this.Controls.Add(this.btnAgain);
             this.Controls.Add(this.grdDados);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -139,12 +139,12 @@
 
         #endregion
 
-        internal System.Windows.Forms.Label lblSubPasta;
-        internal System.Windows.Forms.Label lblLucy;
-        internal System.Windows.Forms.Label lblHandhara;
-        internal System.Windows.Forms.TextBox txtSubPasta;
-        internal System.Windows.Forms.TextBox txtLucy;
-        internal System.Windows.Forms.TextBox txtHandhara;
+        internal System.Windows.Forms.Label lblSubfolder;
+        internal System.Windows.Forms.Label lblComparePath;
+        internal System.Windows.Forms.Label lblMainPath;
+        internal System.Windows.Forms.TextBox txtSubfolder;
+        internal System.Windows.Forms.TextBox txtComparePath;
+        internal System.Windows.Forms.TextBox txtMainPath;
         internal System.Windows.Forms.Button btnAgain;
         internal System.Windows.Forms.DataGridView grdDados;
 

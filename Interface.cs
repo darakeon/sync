@@ -32,10 +32,7 @@ namespace Sync
         }
 
 
-        public const String CHandhara = "HANDHARA";
-        public const String CLucy = "LUCY";
-
-        public const String CNaoExiste = "Não existe";
+        public const String NotExistsProblem = "Não existe";
         public const String CSobrescrever = "Sobrescrever";
         private const Int32 cMaxLinhas = 20;
 
@@ -114,15 +111,15 @@ namespace Sync
 
             var buttonWidth = formWidth / 3;
 
-            form.txtHandhara.Width = buttonWidth;
-            form.txtLucy.Width = buttonWidth;
-            form.txtSubPasta.Width = buttonWidth;
+            form.txtMainPath.Width = buttonWidth;
+            form.txtComparePath.Width = buttonWidth;
+            form.txtSubfolder.Width = buttonWidth;
 
-            form.txtLucy.Left = buttonWidth + txtMargin;
-            form.txtSubPasta.Left = 2 * buttonWidth + txtMargin;
+            form.txtComparePath.Left = buttonWidth + txtMargin;
+            form.txtSubfolder.Left = 2 * buttonWidth + txtMargin;
 
-            form.lblLucy.Left = buttonWidth + lblMargin;
-            form.lblSubPasta.Left = 2 * buttonWidth + lblMargin;
+            form.lblComparePath.Left = buttonWidth + lblMargin;
+            form.lblSubfolder.Left = 2 * buttonWidth + lblMargin;
         }
 
         public static void IssueNotSolved(DataRow row)

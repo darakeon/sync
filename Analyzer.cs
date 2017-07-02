@@ -10,12 +10,12 @@ namespace Sync
 {
     class Analyzer
     {
-        private readonly string handhara;
-        private readonly string lucy;
+        private readonly String mainPath = "";
+        private readonly String comparePath = "";
         private readonly AddRow addRow;
 
-        private String currentPathH;
-        private String currentPathL;
+        private String currentMainPath;
+        private String currentComparePath;
 
         private enum EType
         {
@@ -31,13 +31,13 @@ namespace Sync
 
         public delegate void AddRow(String trouble, String disk, String path, String fileName);
 
-        public Analyzer(String pathH, String pathL, AddRow addRow)
+        public Analyzer(String mainPath, String comparePath, AddRow addRow)
         {
-            currentPathH = putBar(pathH);
-            currentPathL = putBar(pathL);
+            currentMainPath = putBar(mainPath);
+            currentComparePath = putBar(comparePath);
 
-            handhara = currentPathH;
-            lucy = currentPathL;
+            this.mainPath = currentMainPath;
+            this.comparePath = currentComparePath;
 
             this.addRow = addRow;
         }
@@ -45,25 +45,25 @@ namespace Sync
 
         public void CompareDirectories()
         {
-            var sourceControlH = getSourceControlParent(currentPathH);
-            var sourceControlL = getSourceControlParent(currentPathL);
+            var mainSourceControl = getSourceControlParent(currentMainPath);
+            var compareSourceControl = getSourceControlParent(currentComparePath);
 
-            var sourceControlFail = sourceControlH != currentPathL 
-                                 && sourceControlL != currentPathH
-                                 && sourceControlH != sourceControlL;
+            var sourceControlFail = mainSourceControl != currentComparePath 
+                                 && compareSourceControl != currentMainPath
+                                 && mainSourceControl != compareSourceControl;
 
             if (sourceControlFail)
             {
                 throw new Exception(
                     String.Format(
                         "One of this is under source control, the other doesn't:\n{0}\n{1}"
-                        , currentPathH, currentPathL
+                        , currentMainPath, currentComparePath
                     )
                 );
             }
 
 
-            if (sourceControlH == null && sourceControlL == null)
+            if (mainSourceControl == null && compareSourceControl == null)
             {
                 analyzeFiles();
                 analyzeDirectories();
@@ -76,111 +76,107 @@ namespace Sync
 
         private void analyzeFiles()
         {
-            var directoryH = Directory.GetFiles(currentPathH);
-            var directoryL = Directory.GetFiles(currentPathL);
+            var mainDirs = Directory.GetFiles(currentMainPath);
+            var compareDirs = Directory.GetFiles(currentComparePath);
 
-            analyze(EType.File, directoryH, directoryL);
+            analyze(EType.File, mainDirs, compareDirs);
         }
 
         private void analyzeDirectories()
         {
-            var directoryH = Directory.GetDirectories(currentPathH);
-            var directoryL = Directory.GetDirectories(currentPathL);
+            var mainDirs = Directory.GetDirectories(currentMainPath);
+            var compareDirs = Directory.GetDirectories(currentComparePath);
 
-            analyze(EType.Directory, directoryH, directoryL);
+            analyze(EType.Directory, mainDirs, compareDirs);
         }
 
-        private void analyze(EType type, String[] directoryH, String[] directoryL)
+        private void analyze(EType type, String[] mainDirs, String[] currentDirs)
         {
-            directoryH = directoryH.OrderBy(p => p).ToArray();
-            directoryL = directoryL.OrderBy(p => p).ToArray();
+            mainDirs = mainDirs.OrderBy(p => p).ToArray();
+            currentDirs = currentDirs.OrderBy(p => p).ToArray();
 
-            var lengthH = directoryH.Length;
-            var lengthL = directoryL.Length;
+            var mainDirsCount = mainDirs.Length;
+            var currentDirsCount = currentDirs.Length;
 
-            var positionH = 0;
-            var positionL = 0;
-
-            while (positionH < lengthH && positionL < lengthL)
+            var currentMainDir = 0;
+            var currentCompareDir = 0;
+            
+            while (currentMainDir < mainDirsCount && currentCompareDir < currentDirsCount)
             {
-                var nameH = itemName(directoryH[positionH]);
-                var nameL = itemName(directoryL[positionL]);
+                var mainDirName = itemName(mainDirs[currentMainDir]);
+                var compareDirName = itemName(currentDirs[currentCompareDir]);
 
-                var pathH = filePath(directoryH[positionH]);
-                var pathL = filePath(directoryL[positionL]);
+                var mainFilePath = filePath(mainDirs[currentMainDir]);
+                var compareFilePath = filePath(currentDirs[currentCompareDir]);
 
-                var discardH = isDisposable(type, nameH);
-                var discardL = isDisposable(type, nameL);
-                var discard = discardH || discardL;
+                var shouldVerifyMain = shouldVerify(type, mainDirName);
+                var shouldVerifyCompare = shouldVerify(type, compareDirName);
+                var shouldVerifyBoth = shouldVerifyMain && shouldVerifyCompare;
 
-                if (discardH) positionH++;
+                if (!shouldVerifyMain) currentMainDir++;
 
-                if (discardL) positionL++;
+                if (!shouldVerifyCompare) currentCompareDir++;
 
-                if (!discard)
+                if (shouldVerifyBoth)
                 {
-                    var compare = nameH.CompareTo(nameL);
+                    var compare = mainDirName.CompareTo(compareDirName);
 
                     switch ((ECompare)compare)
                     {
                         case ECompare.Greater:
-                            addRow(Interface.CNaoExiste, Interface.CHandhara, pathL, nameL);
-                            positionL++;
+                            addRow(Interface.NotExistsProblem, mainPath, compareFilePath, compareDirName);
+                            currentCompareDir++;
                             break;
                         case ECompare.Less:
-                            addRow(Interface.CNaoExiste, Interface.CLucy, pathH, nameH);
-                            positionH++;
+                            addRow(Interface.NotExistsProblem, comparePath, mainFilePath, mainDirName);
+                            currentMainDir++;
                             break;
                         case ECompare.Equal:
 
                             switch (type)
                             {
                                 case EType.File:
-                                    var dataH = Directory.GetLastWriteTime(directoryH[positionH]);
-                                    var dataL = Directory.GetLastWriteTime(directoryL[positionL]);
+                                    var mainDate = Directory.GetLastWriteTime(mainDirs[currentMainDir]);
+                                    var compareDate = Directory.GetLastWriteTime(currentDirs[currentCompareDir]);
 
-                                    if (dataH.IsReallyGreaterThan(dataL))
-                                        addRow(Interface.CSobrescrever, Interface.CLucy, pathH, nameH);
-                                    else if (dataL.IsReallyGreaterThan(dataH))
-                                        addRow(Interface.CSobrescrever, Interface.CHandhara, pathL, nameL);
+                                    if (mainDate.IsReallyGreaterThan(compareDate))
+                                        addRow(Interface.CSobrescrever, comparePath, mainFilePath, mainDirName);
+                                    else if (compareDate.IsReallyGreaterThan(mainDate))
+                                        addRow(Interface.CSobrescrever, mainPath, compareFilePath, compareDirName);
                                     break;
 
                                 case EType.Directory:
-                                    currentPathH = directoryH[positionH];
-                                    currentPathL = directoryL[positionL];
+                                    currentMainPath = mainDirs[currentMainDir];
+                                    currentComparePath = currentDirs[currentCompareDir];
                                     CompareDirectories();
 
                                     break;
                             }
 
-                            positionL++;
-                            positionH++;
+                            currentCompareDir++;
+                            currentMainDir++;
 
                             break;
                     }
                 }
             }
 
-            for (var i = positionH; i < lengthH; i++)
+            for (var i = currentMainDir; i < mainDirsCount; i++)
             {
-                var name = itemName(directoryH[i]);
-                var path = filePath(directoryH[i]);
+                var name = itemName(mainDirs[i]);
+                var path = filePath(mainDirs[i]);
 
-                var discard = isDisposable(type, name);
-
-                if (!discard)
-                    addRow(Interface.CNaoExiste, Interface.CLucy, path, name);
+                if (shouldVerify(type, name))
+                    addRow(Interface.NotExistsProblem, comparePath, path, name);
             }
 
-            for (var i = positionL; i < lengthL; i++)
+            for (var i = currentCompareDir; i < currentDirsCount; i++)
             {
-                var name = itemName(directoryL[i]);
-                var path = filePath(directoryL[i]);
+                var name = itemName(currentDirs[i]);
+                var path = filePath(currentDirs[i]);
 
-                var discard = isDisposable(type, name);
-
-                if (!discard)
-                    addRow(Interface.CNaoExiste, Interface.CHandhara, path, name);
+                if (shouldVerify(type, name))
+                    addRow(Interface.NotExistsProblem, mainPath, path, name);
             }
 
         }
@@ -199,11 +195,11 @@ namespace Sync
 
 
 
-        private static bool isDisposable(EType type, String name)
+        private static bool shouldVerify(EType type, String name)
         {
             return type == EType.Directory
-                ? name == "bin" || name == "obj" || name == ".svn" || name.StartsWith("_ReSharper")
-                : name.EndsWith(".user") || name.EndsWith(".suo") || name.EndsWith(".ReSharper");
+                ? name != "bin" && name != "obj" && name != ".svn" && !name.StartsWith("_ReSharper")
+                : !name.EndsWith(".user") && !name.EndsWith(".suo") && !name.EndsWith(".ReSharper");
         }
 
 
@@ -300,8 +296,8 @@ namespace Sync
 
         private void verifyToDelete(DataRow row)
         {
-            String pathH, pathL, pathDestiny;
-            DateTime dataH, dataL;
+            String rowMainPath, rowComparePath, pathDestiny;
+            DateTime mainDate, compareDate;
             
             var issue = row[Interface.ColAction].ToString();
             var pathOrigin = Path.Combine(
@@ -310,53 +306,54 @@ namespace Sync
             var disk = row[Interface.ColDisk].ToString();
 
 
-            switch (disk)
+            if (disk == mainPath)
             {
-                case Interface.CHandhara:
-                    pathL = pathOrigin;
-                    pathH = pathOrigin.Replace(lucy, handhara);
-                    pathDestiny = pathH;
-                    break;
-                case Interface.CLucy:
-                    pathH = pathOrigin;
-                    pathL = pathOrigin.Replace(handhara, lucy);
-                    pathDestiny = pathL;
-                    break;
-                default:
-                    MessageBox.Show(Resources.Analyzer_VerifyToDelete);
-                    return;
+                rowComparePath = pathOrigin;
+                rowMainPath = pathOrigin.Replace(comparePath, mainPath);
+                pathDestiny = rowMainPath;
+            }
+            else if (disk == comparePath)
+            {
+                rowMainPath = pathOrigin;
+                rowComparePath = pathOrigin.Replace(mainPath, comparePath);
+                pathDestiny = rowComparePath;
+            }
+            else
+            {
+                MessageBox.Show(Resources.Analyzer_VerifyToDelete);
+                return;
             }
 
             switch (issue)
             {
                 case Interface.CSobrescrever:
 
-                    dataH = File.GetLastWriteTime(pathH);
-                    dataL = File.GetLastWriteTime(pathL);
+                    mainDate = File.GetLastWriteTime(rowMainPath);
+                    compareDate = File.GetLastWriteTime(rowComparePath);
+                    
 
-
-                    if (dataH.IsReallyGreaterThan(dataL))
+                    if (mainDate.IsReallyGreaterThan(compareDate))
                     {
-                        if (disk == Interface.CLucy)
+                        if (disk == comparePath)
                         {
                             Interface.IssueNotSolved(row);
                         }
                         else
                         {
-                            row[Interface.ColDisk] = Interface.CLucy;
-                            row[Interface.ColPath] = pathH;
+                            row[Interface.ColDisk] = comparePath;
+                            row[Interface.ColPath] = rowMainPath;
                         }
                     }
-                    else if (dataL.IsReallyGreaterThan(dataH))
+                    else if (compareDate.IsReallyGreaterThan(mainDate))
                     {
-                        if (disk == Interface.CHandhara)
+                        if (disk == mainPath)
                         {
                             Interface.IssueNotSolved(row);
                         }
                         else
                         {
-                            row[Interface.ColDisk] = Interface.CHandhara;
-                            row[Interface.ColPath] = pathL;
+                            row[Interface.ColDisk] = mainPath;
+                            row[Interface.ColPath] = rowComparePath;
                         }
                     }
                     else
@@ -365,7 +362,7 @@ namespace Sync
                     }
                     break;
 
-                case Interface.CNaoExiste:
+                case Interface.NotExistsProblem:
 
                     var originExists = File.Exists(pathOrigin) || Directory.Exists(pathOrigin);
                     var destinyExists = File.Exists(pathDestiny) || Directory.Exists(pathDestiny);
