@@ -71,7 +71,7 @@
             // 
             this.txtSubfolder.Location = new System.Drawing.Point(175, 45);
             this.txtSubfolder.Name = "txtSubfolder";
-            this.txtSubfolder.Size = new System.Drawing.Size(60, 20);
+            this.txtSubfolder.Size = new System.Drawing.Size(80, 20);
             this.txtSubfolder.TabIndex = 20;
             // 
             // txtComparePath
@@ -93,7 +93,7 @@
             this.btnAgain.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnAgain.Location = new System.Drawing.Point(0, 0);
             this.btnAgain.Name = "btnAgain";
-            this.btnAgain.Size = new System.Drawing.Size(240, 23);
+            this.btnAgain.Size = new System.Drawing.Size(261, 23);
             this.btnAgain.TabIndex = 17;
             this.btnAgain.Text = "RUN";
             this.btnAgain.UseVisualStyleBackColor = true;
@@ -107,11 +107,11 @@
             this.grdDados.AllowUserToResizeRows = false;
             this.grdDados.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.grdDados.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.grdDados.Location = new System.Drawing.Point(2, 74);
+            this.grdDados.Location = new System.Drawing.Point(1, 74);
             this.grdDados.Name = "grdDados";
             this.grdDados.ReadOnly = true;
             this.grdDados.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.grdDados.Size = new System.Drawing.Size(180, 45);
+            this.grdDados.Size = new System.Drawing.Size(259, 45);
             this.grdDados.TabIndex = 16;
             this.grdDados.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grdDadosCellClick);
             // 
@@ -119,7 +119,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(240, 72);
+            this.ClientSize = new System.Drawing.Size(261, 120);
             this.Controls.Add(this.lblSubfolder);
             this.Controls.Add(this.lblComparePath);
             this.Controls.Add(this.lblMainPath);

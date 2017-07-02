@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Sync.Properties;
 
@@ -16,6 +18,18 @@ namespace Sync
 
             txtMainPath.Text = ConfigurationManager.AppSettings["MainPath"];
             txtComparePath.Text = ConfigurationManager.AppSettings["ComparePath"];
+            txtSubfolder.Text = ConfigurationManager.AppSettings["Subfolder"];
+
+            lblMainPath.Text = Resources.Interface_Field_MainPath;
+            lblComparePath.Text = Resources.Interface_Field_ComparePath;
+            lblSubfolder.Text = Resources.Interface_Field_Subfolder;
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            Interface.Realign(this);
+
+            base.OnLoad(e);
         }
 
         private String mainPath;
@@ -25,7 +39,7 @@ namespace Sync
         private readonly Interface @interface;
         #endregion
 
-        private void charge()
+        private String charge()
         {
             @interface.Clear();
 
@@ -33,10 +47,9 @@ namespace Sync
             comparePath = getPath(txtComparePath);
 
             if (mainPath == null || comparePath == null)
-                return;
+                return Resources.Folder_FillTheFields;
 
             analyzer = new Analyzer(mainPath, comparePath, @interface.AddRow);
-
 
 
             try
@@ -45,8 +58,7 @@ namespace Sync
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
-                return;
+                return e.Message;
             }
 
 
@@ -54,48 +66,17 @@ namespace Sync
             if (@interface.RowsCount == 0)
             {
                 Interface.Realign(this);
-                MessageBox.Show(Resources.Folder_NotFilesFound);
+                return Resources.Folder_NoFilesFound;
             }
-            else
-            {
-                grdDados.DataSource = @interface.Table;
+            
+            
+            grdDados.DataSource = @interface.Table;
 
-                setSolveButton();
+            setSolveButton();
 
-                Interface.Realign(this);
-                MessageBox.Show(
-                    string.Format(Resources.Folder_SyncFilesCount, grdDados.RowCount)
-                );
-            }
+            Interface.Realign(this);
 
-        }
-
-        private void setSolveButton()
-        {
-            var solveButton = new DataGridViewButtonColumn
-                                  {
-                                      Name = Interface.ColSolve,
-                                      Text = Interface.ColSolve
-                                  };
-
-            grdDados.Columns.Add(solveButton);
-
-            foreach (DataGridViewRow row in grdDados.Rows)
-            {
-                var action = row.Cells[Interface.ColTrouble].Value.ToString();
-                var button = row.Cells[Interface.ColSolve];
-
-                switch (action)
-                {
-                    case Interface.NotExistsProblem:
-                        button.Value = Interface.SolveNotExists;
-                        break;
-                    case Interface.ObseleteProblem:
-                        button.Value = Interface.SolveObselete;
-                        break;
-                }
-                
-            }
+            return String.Format(Resources.Folder_SyncFilesCount, grdDados.RowCount);
         }
 
         private String getPath(Control textBox)
@@ -110,91 +91,142 @@ namespace Sync
                 return path;
             }
 
-            MessageBox.Show( String.Format(@"""{0}"" não existe!", path));
+            MessageBox.Show(String.Format(@"""{0}"" não existe!", path));
             textBox.Focus();
             return null;
         }
 
+        private void setSolveButton()
+        {
+            addButton(Resources.Interface_Button_Update);
+            addButton(Resources.Interface_Button_Rollback);
+
+            foreach (DataGridViewRow row in grdDados.Rows)
+            {
+                var action = row.Cells[Resources.Interface_Column_Trouble].Value.ToString();
+                var acceptButton = row.Cells[Resources.Interface_Button_Update];
+                var refuseButton = row.Cells[Resources.Interface_Button_Rollback];
+
+                if (action == Resources.Interface_Row_NotExistsProblem)
+                {
+                    acceptButton.Value = Resources.Interface_Action_UpdateNotExists;
+                    refuseButton.Value = Resources.Interface_Action_RollbackNotExists;
+                }
+                
+                if (action == Resources.Interface_Row_ObseleteProblem)
+                {
+                    acceptButton.Value = Resources.Interface_Action_UpdateObselete;
+                    refuseButton.Value = Resources.Interface_Action_RollbackObselete;
+                }
+            }
+        }
+
+        private void addButton(String name)
+        {
+            if (grdDados.Columns.Contains(name))
+                return;
+
+            var button = 
+                new DataGridViewButtonColumn
+                    {
+                        Name = name,
+                        Text = name
+                    };
+
+            grdDados.Columns.Add(button);
+        }
+
+
+
         private void btnAgainClick(object sender, EventArgs e)
         {
-            btnAgain.Enabled = false;
-            Cursor = Cursors.WaitCursor;
+            Hide();
 
-            charge();
+            var cancelToken = new CancellationTokenSource();
 
-            btnAgain.Enabled = true;
-            Cursor = Cursors.Default;
+            var task = new Task(() => new Wait().Progress(cancelToken.Token), cancelToken.Token);
+            task.Start();
 
-            //this.Folder_Resize(sender, e);
+            String message;
+
+            try
+            {
+                message = charge();
+            }
+            finally
+            {
+                cancelToken.Cancel();
+            }
+
+            MessageBox.Show(message);
+
+            Show();
         }
+
+
 
         private void grdDadosCellClick(object sender, DataGridViewCellEventArgs e)
         {
-            var buttonColumn = grdDados.Columns[Interface.ColSolve];
-
-            var isLastColumn = e.ColumnIndex == buttonColumn.Index;
             var isHeaderLine = e.RowIndex < 0;
 
-            if (!isLastColumn || isHeaderLine)
+            if (isHeaderLine)
                 return;
 
-            var cell = grdDados.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            var acceptButton = getButton(Resources.Interface_Button_Update);
+            var invertButton = getButton(Resources.Interface_Button_Rollback);
+
+            var isAcceptButton = e.ColumnIndex == acceptButton.Index;
+            var isInvertButton = e.ColumnIndex == invertButton.Index;
+            var isButton = isAcceptButton || isInvertButton;
+
+            if (!isButton)
+                return;
+
+            var row = grdDados.Rows[e.RowIndex];
+            var cell = row.Cells[e.ColumnIndex];
             var done = false;
 
-            switch (cell.Value.ToString())
+            var cellValue = cell.Value.ToString();
+
+            var fixer = new Fixer(row);
+
+            try
             {
-                case Interface.SolveNotExists:
-                    done = copy(e.RowIndex);
-                    break;
-                case Interface.SolveObselete:
-                    done = overwrite(e.RowIndex);
-                    break;
+                if (cellValue == Resources.Interface_Action_UpdateNotExists)
+                    done = fixer.Copy();
+
+                if (cellValue == Resources.Interface_Action_UpdateObselete)
+                    done = fixer.Update();
+
+                if (cellValue == Resources.Interface_Action_RollbackNotExists)
+                    done = fixer.Delete();
+
+                if (cellValue == Resources.Interface_Action_RollbackObselete)
+                    done = fixer.Rollback();
+            }
+            catch (ApplicationException error)
+            {
+                MessageBox.Show(error.Message);
             }
 
             if (done)
+            {
+                grdDados.Rows.Remove(row);
                 Interface.Realign(this);
+
+                if (grdDados.Rows.Count == 0)
+                    MessageBox.Show(Resources.Folder_NoFilesFound);
+            }
         }
 
-
-        private Boolean copy(Int32 rowNumber)
+        private DataGridViewColumn getButton(String buttonName)
         {
-            var row = grdDados.Rows[rowNumber];
+            var button = grdDados.Columns[buttonName];
 
-            var updated = row.Cells[Interface.ColUpdated].Value.ToString();
-            var obsolete = row.Cells[Interface.ColObsolete].Value.ToString();
+            if (button == null)
+                throw new ApplicationException(Resources.Folder_MissingButton);
 
-            var relativePath = row.Cells[Interface.ColPath].Value.ToString();
-            var file = row.Cells[Interface.ColFileName].Value.ToString();
-
-            var origin = new FileToWrite(updated, relativePath, file);
-            var destiny = new FileToWrite(obsolete, relativePath, file);
-
-            var confirm = confirmBox(Resources.Folder_SureCopy, origin.Path, file, destiny.Date, origin.Date);
-
-            if (!confirm)
-                return false;
-            
-            throw new NotImplementedException();
-        }
-
-        
-        private Boolean overwrite(Int32 rowNumber)
-        {
-            var confirm = confirmBox(Resources.Folder_SureOverwrite);
-
-            if (!confirm)
-                return false;
-            throw new NotImplementedException();
-        }
-        
-
-        private Boolean confirmBox(String format, params object[] args)
-        {
-            var message = String.Format(format, args);
-
-            var response = MessageBox.Show(message, Resources.Sync, MessageBoxButtons.YesNo);
-
-            return response == DialogResult.Yes;
+            return button;
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Windows.Forms;
+using Sync.Properties;
 
 namespace Sync
 {
@@ -12,11 +13,11 @@ namespace Sync
         {
             Table = new DataTable();
 
-            Table.Columns.Add(ColTrouble);
-            Table.Columns.Add(ColObsolete);
-            Table.Columns.Add(ColUpdated);
-            Table.Columns.Add(ColPath);
-            Table.Columns.Add(ColFileName);
+            Table.Columns.Add(Resources.Interface_Column_Trouble);
+            Table.Columns.Add(Resources.Interface_Column_Obsolete);
+            Table.Columns.Add(Resources.Interface_Column_Updated);
+            Table.Columns.Add(Resources.Interface_Column_Path);
+            Table.Columns.Add(Resources.Interface_Column_FileName);
             
             Table.PrimaryKey = new []
             {
@@ -29,43 +30,29 @@ namespace Sync
         }
 
 
-        public const String NotExistsProblem = "Não existe";
-        public const String ObseleteProblem = "Desatualizado";
-        public const String SolveNotExists = "Copiar";
-        public const String SolveObselete = "Sobrescrever";
 
         private const Int32 maxLines = 20;
 
-        public const String ColTrouble = "Problema";
-        public const String ColObsolete = "Em";
-        public const String ColUpdated = "Atualizado";
-        public const String ColPath = "Caminho";
-        public const String ColFileName = "Arquivo";
-        public const String ColSolve = "Resolver";
-
-
-        private const int defaultWidth = 180;
+        private const int defaultWidth = 276;
         private const int defaultHeight = 110;
 
         private const int rowLabelWidth = 43;
-        private const int colLabelHeight = 22;
+        private const int colLabelHeight = 38;
 
         private const int scrollWidth = 18;
 
-        private const int txtMargin = 4;
+        private const int txtMargin = 5;
         private const int lblMargin = 5;
 
         private const int frmMarginRight = 20;
         private const int frmMarginBottom = 4;
-        
-
-        private static readonly String[] denies = new[] { "Não", "NÃO", "Não..." };
-        private static Int32 witchNo;
 
 
         public static void Realign(Folder form)
         {
-            var rowCount = form.grdDados.RowCount;
+            var rowCount = form.grdDados == null
+                ? 0 : form.grdDados.RowCount;
+
 
             int formWidth;
 
@@ -108,32 +95,36 @@ namespace Sync
 
             form.Width = formWidth + frmMarginRight;
 
-            form.btnAgain.Width = formWidth;
-
-            var buttonWidth = formWidth / 3;
+            var buttonWidth = (formWidth - 3 * txtMargin) / 3;
 
             form.txtMainPath.Width = buttonWidth;
             form.txtComparePath.Width = buttonWidth;
             form.txtSubfolder.Width = buttonWidth;
 
-            form.txtComparePath.Left = buttonWidth + txtMargin;
-            form.txtSubfolder.Left = 2 * buttonWidth + txtMargin;
+            var mainSpace = form.txtMainPath.Width + form.txtMainPath.Left;
+            form.txtComparePath.Left = mainSpace + txtMargin;
+            form.lblComparePath.Left = mainSpace + lblMargin;
 
-            form.lblComparePath.Left = buttonWidth + lblMargin;
-            form.lblSubfolder.Left = 2 * buttonWidth + lblMargin;
+            var compareSpace = form.txtComparePath.Width + form.txtComparePath.Left;
+            form.txtSubfolder.Left = compareSpace + txtMargin;
+            form.lblSubfolder.Left = compareSpace + lblMargin;
         }
 
         public void AddRow(String trouble, String obsolete, String updated, String path, String fileName)
         {
+            path = String.IsNullOrWhiteSpace(path) 
+                ? Resources.Interface_Row_Root 
+                : path.Substring(1);
+
             var row = Table.NewRow();
 
-            row[ColTrouble] = trouble;
-            
-            row[ColObsolete] = obsolete;
-            row[ColUpdated] = updated;
+            row[Resources.Interface_Column_Trouble] = trouble;
 
-            row[ColPath] = path;
-            row[ColFileName] = fileName;
+            row[Resources.Interface_Column_Obsolete] = obsolete;
+            row[Resources.Interface_Column_Updated] = updated;
+
+            row[Resources.Interface_Column_Path] = path;
+            row[Resources.Interface_Column_FileName] = fileName;
 
             Table.Rows.Add(row);
         }

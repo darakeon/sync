@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Sync.Properties;
 
 namespace Sync
 {
@@ -107,12 +108,12 @@ namespace Sync
                 switch (diff)
                 {
                     case ECompare.Greater:
-                        addRow(Interface.NotExistsProblem, mainPath, comparePath, compareItem.Path, compareItem.Name);
+                        addRow(Resources.Interface_Row_NotExistsProblem, mainPath, comparePath, compareItem.Path, compareItem.Name);
                         compare.Next();
                         break;
 
                     case ECompare.Less:
-                        addRow(Interface.NotExistsProblem, comparePath, mainPath, mainItem.Path, mainItem.Name);
+                        addRow(Resources.Interface_Row_NotExistsProblem, comparePath, mainPath, mainItem.Path, mainItem.Name);
                         main.Next();
                         break;
 
@@ -122,9 +123,9 @@ namespace Sync
                         {
                             case EType.File:
                                 if (mainItem.IsNewerThan(compareItem))
-                                    addRow(Interface.ObseleteProblem, comparePath, mainPath, mainItem.Path, mainItem.Name);
+                                    addRow(Resources.Interface_Row_ObseleteProblem, comparePath, mainPath, mainItem.Path, mainItem.Name);
                                 else if (compareItem.IsNewerThan(mainItem))
-                                    addRow(Interface.ObseleteProblem, mainPath, comparePath, compareItem.Path, compareItem.Name);
+                                    addRow(Resources.Interface_Row_ObseleteProblem, mainPath, comparePath, compareItem.Path, compareItem.Name);
 
                                 break;
 
@@ -146,7 +147,9 @@ namespace Sync
                 var item = new FileToTest(type, main.GetCurrent(), mainPath);
 
                 if (item.ShouldVerify)
-                    addRow(Interface.NotExistsProblem, comparePath, mainPath, item.Path, item.Name);
+                    addRow(Resources.Interface_Row_NotExistsProblem, comparePath, mainPath, item.Path, item.Name);
+
+                main.Next();
             }
 
             while(compare.NotEnded())
@@ -154,7 +157,9 @@ namespace Sync
                 var item = new FileToTest(type, compare.GetCurrent(), comparePath);
 
                 if (item.ShouldVerify)
-                    addRow(Interface.NotExistsProblem, mainPath, comparePath, item.Path, item.Name);
+                    addRow(Resources.Interface_Row_NotExistsProblem, mainPath, comparePath, item.Path, item.Name);
+
+                compare.Next();
             }
 
         }

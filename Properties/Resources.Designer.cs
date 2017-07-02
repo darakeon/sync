@@ -61,38 +61,67 @@ namespace Sync.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Erro, programa fora dos parâmetros.
+        ///   Looks up a localized string similar to Deseja copiar [{0}] para [{1}]?.
         /// </summary>
-        internal static string Analyzer_VerifyToDelete {
+        internal static string Fixer_SureCopy {
             get {
-                return ResourceManager.GetString("Analyzer_VerifyToDelete", resourceCulture);
+                return ResourceManager.GetString("Fixer_SureCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deseja deletar o arquivo [{0}] em [{1}]?.
+        /// </summary>
+        internal static string Fixer_SureDelete {
+            get {
+                return ResourceManager.GetString("Fixer_SureDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deseja substituir o arquivo [{0}] em [{1}]?
+        ///Data do arquivo que será apagado: {2}
+        ///Data do arquivo que permanecerá: {3}.
+        /// </summary>
+        internal static string Fixer_SureOverwrite {
+            get {
+                return ResourceManager.GetString("Fixer_SureOverwrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item estranho (não é pasta nem arquivo)..
+        /// </summary>
+        internal static string Fixer_WeirdItemType {
+            get {
+                return ResourceManager.GetString("Fixer_WeirdItemType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preencha ao menos os dois primeiros campos..
+        /// </summary>
+        internal static string Folder_FillTheFields {
+            get {
+                return ResourceManager.GetString("Folder_FillTheFields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Botões faltando..
+        /// </summary>
+        internal static string Folder_MissingButton {
+            get {
+                return ResourceManager.GetString("Folder_MissingButton", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Sem arquivos a sincronizar!.
         /// </summary>
-        internal static string Folder_NotFilesFound {
+        internal static string Folder_NoFilesFound {
             get {
-                return ResourceManager.GetString("Folder_NotFilesFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Deseja copiar {0} para {1}?.
-        /// </summary>
-        internal static string Folder_SureCopy {
-            get {
-                return ResourceManager.GetString("Folder_SureCopy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Deseja substituir o arquivo {0} em {1}?\nData antiga: {2}\nData nova: {3}.
-        /// </summary>
-        internal static string Folder_SureOverwrite {
-            get {
-                return ResourceManager.GetString("Folder_SureOverwrite", resourceCulture);
+                return ResourceManager.GetString("Folder_NoFilesFound", resourceCulture);
             }
         }
         
@@ -106,11 +135,173 @@ namespace Sync.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deletar origem.
+        /// </summary>
+        internal static string Interface_Action_RollbackNotExists {
+            get {
+                return ResourceManager.GetString("Interface_Action_RollbackNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sobrescrever origem.
+        /// </summary>
+        internal static string Interface_Action_RollbackObselete {
+            get {
+                return ResourceManager.GetString("Interface_Action_RollbackObselete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copiar para destino.
+        /// </summary>
+        internal static string Interface_Action_UpdateNotExists {
+            get {
+                return ResourceManager.GetString("Interface_Action_UpdateNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sobrescrever destino.
+        /// </summary>
+        internal static string Interface_Action_UpdateObselete {
+            get {
+                return ResourceManager.GetString("Interface_Action_UpdateObselete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Desfazer.
+        /// </summary>
+        internal static string Interface_Button_Rollback {
+            get {
+                return ResourceManager.GetString("Interface_Button_Rollback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Atualizar.
+        /// </summary>
+        internal static string Interface_Button_Update {
+            get {
+                return ResourceManager.GetString("Interface_Button_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arquivo.
+        /// </summary>
+        internal static string Interface_Column_FileName {
+            get {
+                return ResourceManager.GetString("Interface_Column_FileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Antigo (destino).
+        /// </summary>
+        internal static string Interface_Column_Obsolete {
+            get {
+                return ResourceManager.GetString("Interface_Column_Obsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Caminho.
+        /// </summary>
+        internal static string Interface_Column_Path {
+            get {
+                return ResourceManager.GetString("Interface_Column_Path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Problema.
+        /// </summary>
+        internal static string Interface_Column_Trouble {
+            get {
+                return ResourceManager.GetString("Interface_Column_Trouble", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mais atualizado (origem).
+        /// </summary>
+        internal static string Interface_Column_Updated {
+            get {
+                return ResourceManager.GetString("Interface_Column_Updated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comparar.
+        /// </summary>
+        internal static string Interface_Field_ComparePath {
+            get {
+                return ResourceManager.GetString("Interface_Field_ComparePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Principal.
+        /// </summary>
+        internal static string Interface_Field_MainPath {
+            get {
+                return ResourceManager.GetString("Interface_Field_MainPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subpasta.
+        /// </summary>
+        internal static string Interface_Field_Subfolder {
+            get {
+                return ResourceManager.GetString("Interface_Field_Subfolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não existe.
+        /// </summary>
+        internal static string Interface_Row_NotExistsProblem {
+            get {
+                return ResourceManager.GetString("Interface_Row_NotExistsProblem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Desatualizado.
+        /// </summary>
+        internal static string Interface_Row_ObseleteProblem {
+            get {
+                return ResourceManager.GetString("Interface_Row_ObseleteProblem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Raiz].
+        /// </summary>
+        internal static string Interface_Row_Root {
+            get {
+                return ResourceManager.GetString("Interface_Row_Root", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verificar.
+        /// </summary>
+        internal static string Interface_Run {
+            get {
+                return ResourceManager.GetString("Interface_Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sync.
         /// </summary>
-        internal static string Sync {
+        internal static string SyncName {
             get {
-                return ResourceManager.GetString("Sync", resourceCulture);
+                return ResourceManager.GetString("SyncName", resourceCulture);
             }
         }
     }
