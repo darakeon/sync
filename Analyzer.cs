@@ -305,7 +305,7 @@ namespace Sync
             
             var issue = row[Interface.ColAction].ToString();
             var pathOrigin = Path.Combine(
-                    row[Interface.ColPath].ToString(),
+                    row[Interface.ColPath] + @"\",
                     row[Interface.ColFileName].ToString());
             var disk = row[Interface.ColDisk].ToString();
 
